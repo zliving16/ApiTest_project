@@ -1,0 +1,134 @@
+@{
+    ViewData["Title"] = "The Page of Victory";
+
+}
+@model Photos
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="btn btn-primary navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Login/Logout</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li><a  asp-controller="Account" asp-action="Logout">Logout</a></li>
+                }
+                else
+                {
+                    <li><a asp-controller="Account" asp-action="Login">Login</a></li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="text-center"><h1>Data Encryption Test</h1></div>
+<div class="container">
+    <form class="form-group" asp-action="AddPhoto" method="post">
+        <span asp-validation-for="PhotoPath"></span>
+        <label asp-for="PhotoPath">Url</label>
+        <input asp-for="PhotoPath"><br>
+        <span asp-validation-for="Desc"></span>
+        <label asp-for="Desc">Description</label><br>
+        <textarea asp-for="Desc"></textarea>
+        <button class="btn btn-primary">Add Photo</button>
+    </form>
+
+
+</div>
+<div class="container">
+    @foreach (var item in ViewBag.AllPhotos)
+    {   
+        <div style="display:inline-block;" class="container">
+            <img style="display:inline-block;" height="100" width="100" src="/images/@item.PhotoPath" alt="not supported"> 
+            <p>@item.Desc</p>
+        </div>
+            
+    }
+</div>
+
+
+
+
+
+  <!--[if IE 8]>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/ie8/0.2.5/ie8.js"></script>
+  <![endif]-->
+
+  <!--[if lte IE 9]>
+  <script src="https://cdn.auth0.com/js/base64.js"></script>
+  <script src="https://cdn.auth0.com/js/es5-shim.min.js"></script>
+  <![endif]-->
+
+  <script src="https://cdn.auth0.com/js/lock/11.20/lock.min.js"></script>
+  <script>
+    // Decode utf8 characters properly
+    var config = JSON.parse(decodeURIComponent(escape(window.atob('@@config@@'))));
+    config.extraParams = config.extraParams || {};
+    var connection = config.connection;
+    var prompt = config.prompt;
+    var languageDictionary;
+    var language;
+
+    if (config.dict && config.dict.signin && config.dict.signin.title) {
+      languageDictionary = { title: config.dict.signin.title };
+    } else if (typeof config.dict === 'string') {
+      language = config.dict;
+    }
+    var loginHint = config.extraParams.login_hint;
+    var colors = config.colors || {};
+
+    // Available Lock configuration options: https://auth0.com/docs/libraries/lock/v11/configuration
+    var lock = new Auth0Lock(config.clientID, config.auth0Domain, {
+      auth: {
+        redirectUrl: config.callbackURL,
+        responseType: (config.internalOptions || {}).response_type ||
+          (config.callbackOnLocationHash ? 'token' : 'code'),
+        params: config.internalOptions
+      },
+      /* additional configuration needed for custom domains
+      configurationBaseUrl: config.clientConfigurationBaseUrl,
+      overrides: {
+        __tenant: config.auth0Tenant,
+        __token_issuer: 'YOUR_CUSTOM_DOMAIN'
+      }, */
+      assetsUrl:  config.assetsUrl,
+      allowedConnections: connection ? [connection] : null,
+      rememberLastLogin: !prompt,
+      language: language,
+      languageDictionary: languageDictionary,
+      theme: {
+        //logo:            'YOUR LOGO HERE',
+        primaryColor:    colors.primary ? colors.primary : 'green'
+      },
+      prefill: loginHint ? { email: loginHint, username: loginHint } : null,
+      closable: false,
+      defaultADUsernameFromEmailPrefix: false,
+      // uncomment if you want small buttons for social providers
+      // socialButtonStyle: 'small'
+    });
+
+    if(colors.page_background) {
+      var css = '.auth0-lock.auth0-lock .auth0-lock-overlay { background: ' +
+                  colors.page_background +
+                ' }';
+      var style = document.createElement('style');
+
+      style.appendChild(document.createTextNode(css));
+
+      document.body.appendChild(style);
+    }
+
+    lock.show();
+  </script>
+
+

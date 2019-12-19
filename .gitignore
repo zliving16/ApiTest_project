@@ -1,0 +1,4 @@
+appsettings.json
+EncryptionKey.cs
+Migrations/
+AccesJwt.cs
